@@ -74,6 +74,8 @@ public class Javac {
             deleteDir(rootDir);
             compilationResult.setClassInfos(classInfos);
         }
+        compilationResult.setError(compilationResult.errorStream().toString());
+        compilationResult.setOutput(compilationResult.outputStream().toString());
         return compilationResult;
     }
 

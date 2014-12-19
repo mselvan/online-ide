@@ -27,7 +27,7 @@ public class Main extends Component {
     }
 
     public Main() {
-        Server server = new Server(Protocol.HTTP, 8000);
+        Server server = new Server(Protocol.HTTP, 9000);
         getServers().add(server);
         //server.getContext().getParameters().set("tracing", "true");
 
@@ -35,7 +35,7 @@ public class Main extends Component {
 
         getDefaultHost().attachDefault(new AppConfig());
 
-        System.out.println("Server started on port 8000.");
-        System.out.println("Application is now available on http://localhost:8000/web/index.html");
+        System.out.println("Server started on port 9000.");
+        System.out.println("Application is now available on http://localhost:9000/web/index.html");
     }
 }

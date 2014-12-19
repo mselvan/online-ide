@@ -1,8 +1,5 @@
-package com.gteam;
+package com.gteam.ide;
 
-import com.gteam.ide.JavaProcessor;
-import com.gteam.ide.CompilationResult;
-import com.gteam.ide.ExecutionResult;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,11 +9,8 @@ import java.io.StringWriter;
 
 import static org.junit.Assert.*;
 
-public class JIdeProcessorTest {
-
-    private JavaProcessor processor;
-    private CompilationResult compilationResult;
-
+public class JavaProcessorTest {
+    JavaProcessor processor;
     @Before
     public void setUp() throws Exception {
         processor = new JavaProcessor();
@@ -29,21 +23,21 @@ public class JIdeProcessorTest {
 
     @Test
     public void testCompile_positive() throws Exception {
-        compilationResult = processor.compile(getNonErrorCode());
+        CompilationResult compilationResult = processor.compile(getNonErrorCode());
         assertNotNull(compilationResult);
         assertFalse(compilationResult.hasErrors());
     }
 
     @Test
     public void testCompile_negative() throws Exception {
-        compilationResult = processor.compile(getErrorCode());
+        CompilationResult compilationResult = processor.compile(getErrorCode());
         assertNotNull(compilationResult);
         assertTrue(compilationResult.hasErrors());
     }
 
     @Test
     public void testRun() throws Exception {
-        compilationResult = processor.compile(getNonErrorCode());
+        CompilationResult compilationResult = processor.compile(getNonErrorCode());
         ExecutionResult executionResult = processor.run(compilationResult);
         assertEquals("Hello World!\n", executionResult.getResult());
     }
@@ -71,5 +65,4 @@ public class JIdeProcessorTest {
         out.close();
         return writer.toString();
     }
-
 }

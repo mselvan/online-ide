@@ -17,7 +17,7 @@ html, body{
     height: 100%;
 }
 body {
-    background-color: #7ca4a3;
+    background-color: #eee;
 }
 
 .container {
@@ -37,13 +37,7 @@ body {
 
 h1 {
     font-family: 'Roboto Slab', sans-serif;
-    color: #A2D39F !important;
-}
-
-h2 {
-    margin-bottom: 24px;
-    color: #A43E41 !important;
-
+    color: #333 !important;
 }
 
 #editor-container .nav{

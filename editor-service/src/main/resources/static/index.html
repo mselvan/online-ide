@@ -28,8 +28,7 @@
         <div id="editor-container">
 
             <ul class="nav nav-tabs">
-                <li><a href="#" id="executeCode"><span class="fa fa-gears"></span> Compile &amp; Test</a></li>
-                <li class="active"><a href="#"><span class="fa fa-code"></span>.java</a></li>
+                <li class="active"><a href="#">Code.java</a></li>
             </ul>
             <div class="tab-content">
                 <div class="col-md-6 no-padding">
@@ -42,12 +41,17 @@
                 <div class="col-md-6" id="console">
                     <div class="panel panel-default">
                         <div class="panel-heading">
-                            <h1 class="panel-title"><span class="fa fa-terminal"></span> Console</h1>
+                            <h1 class="panel-title">Console</h1>
                         </div>
                         <div id="consoleArea" class="panel-body"></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <a class="btn btn-primary pull-right" href="#" id="executeCode"><span class="fa fa-gears"></span> Compile &amp; Test</a>
         </div>
     </div>
     <div class="hide">
@@ -59,11 +63,11 @@ package com.gteam;
  */
 public class Solution {
     public static void main(String[] args) {
-        Student student = new Student();
-        student.name = "Nagarajan Shanmugam";
-        System.out.println(student.name);
+        Employee employee = new Employee();
+        employee.name = "Nagarajan Shanmugam";
+        System.out.println(employee.name);
     }
-    static class Student {
+    static class Employee {
         public String name;
     }
 }
