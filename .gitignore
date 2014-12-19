@@ -1,0 +1,35 @@
+target/
+humingo-crawler/**
+humingo-config/**
+*.war
+*.ear
+*.class
+*.iml
+
+.idea
+
+# eclipse specific git ignore
+.project
+.metadata
+bin/**
+tmp/**
+tmp/**/*
+dist/dist/**
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.classpath
+.settings/
+.loadpath
+
+# External tool builders
+.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+*.launch
+
+# Log files
+*.log
+rebel.xml

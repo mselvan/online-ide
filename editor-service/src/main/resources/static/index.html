@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title> A Cloud IDE</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="Simple Language Editor">
+    <meta name="keywords" content="Web based Language Editor">
+    <meta name="author" content="Nagarajan Shanmugam">
+    <meta charset="UTF-8">
+
+    <script type="text/javascript" src="js/jquery-2.1.0.min.js"></script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/editor-interface.js"></script>
+
+    <!--<link href='http://fonts.googleapis.com/css?family=Roboto+Slab' rel='stylesheet' type='text/css'>-->
+    <link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="css/font-awesome.min.css" rel="stylesheet" media="screen">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet" media="screen">
+    <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="container">
+    <div class="row">
+
+        <div id="editor-container">
+
+            <ul class="nav nav-tabs">
+                <li><a href="#" id="executeCode"><span class="fa fa-gears"></span> Compile &amp; Test</a></li>
+                <li class="active"><a href="#"><span class="fa fa-code"></span>.java</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="col-md-6 no-padding">
+                    <form id="url-data-parser">
+                        <pre id="editor">
+
+                        </pre>
+                    </form>
+                </div>
+                <div class="col-md-6" id="console">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h1 class="panel-title"><span class="fa fa-terminal"></span> Console</h1>
+                        </div>
+                        <div id="consoleArea" class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="hide">
+<pre id="editor-template">
+package com.gteam;
+
+/**
+ * Created by nagarajan on 18/12/14.
+ */
+public class Solution {
+    public static void main(String[] args) {
+        Student student = new Student();
+        student.name = "Nagarajan Shanmugam";
+        System.out.println(student.name);
+    }
+    static class Student {
+        public String name;
+    }
+}
+</pre>
+    </div>
+    <script src="js/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+
+    <script src="js/ace/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+        $(document).ready(function () {
+            editorInterface.init();
+        });
+    </script>
+
+</div>
+</body>
+</html>

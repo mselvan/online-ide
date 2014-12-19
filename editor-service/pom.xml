@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>online-editor</artifactId>
+        <groupId>com.gteam</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <packaging>jar</packaging>
+    <artifactId>editor-service</artifactId>
+
+
+    <!-- ================================================================================ -->
+    <!-- Common properties -->
+    <!-- ================================================================================ -->
+    <properties>
+        <!-- Dependencies -->
+        <version.lib.restlet>2.2.2</version.lib.restlet>
+        <version.junit>4.11</version.junit>
+    </properties>
+
+    <!-- ================================================================================ -->
+    <!-- Dependencies -->
+    <!-- ================================================================================ -->
+    <dependencies>
+
+        <dependency>
+            <groupId>org.restlet.jse</groupId>
+            <artifactId>org.restlet</artifactId>
+            <version>${version.lib.restlet}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.restlet.jee</groupId>
+            <artifactId>org.restlet.ext.jackson</artifactId>
+            <version>${version.lib.restlet}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${version.junit}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+
+    <!-- ================================================================================ -->
+    <!-- PLUGINS -->
+    <!-- ================================================================================ -->
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>${project.build.javaVersion}</source>
+                    <target>${project.build.javaVersion}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>com.gteam.rest.server.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                            <finalName>online-editor-${project.version}</finalName>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

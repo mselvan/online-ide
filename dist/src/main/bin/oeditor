@@ -1,0 +1,157 @@
+#!/usr/bin/env bash
+
+# Resolve links - $0 may be a softlink
+PRG="$0"
+while [ -h "$PRG" ]; do
+  ls=`ls -ld "$PRG"`
+  link=`expr "$ls" : '.*-> \(.*\)$'`
+  if expr "$link" : '.*/.*' > /dev/null; then
+    PRG="$link"
+  else
+    PRG=`dirname "$PRG"`/"$link"
+  fi
+done
+PRGDIR=`dirname "$PRG"`
+
+# Read local oeditor properties if any.
+if [ -f $HOME/.oeditorrc ]
+then 
+  . $HOME/.oeditorrc
+fi
+
+# Set OEDITOR_HOME.
+if [ -z "$OEDITOR_HOME" ]
+then
+    OEDITOR_HOME=`cd "$PRGDIR/.." ; pwd`
+fi
+
+cd $OEDITOR_HOME
+
+# Find JAVA_HOME.
+if [ -z "$JAVA_HOME" ]
+then
+  JAVA=`which java`
+  if [ -z "$JAVA" ] 
+  then
+    echo "Cannot find JAVA. Please set JAVA_HOME or your PATH."
+    exit 1
+  fi
+  JAVA_BINDIR=`dirname $JAVA`
+  JAVA_HOME=$JAVA_BINDIR/..
+fi
+
+if [ -z "$JAVACMD" ] 
+then 
+   # It may be defined in env - including flags!!
+   JAVACMD="$JAVA_HOME/bin/java"
+fi
+
+# Ignore previous classpath.  Build one that contains oeditor jar and content
+# of the lib directory into the variable CP.
+for jar in `ls $OEDITOR_HOME/lib/*.jar`
+do
+    CP=${CP}:${jar}
+done
+
+# cygwin path translation
+if expr `uname` : 'CYGWIN*' > /dev/null; then
+    CP=`cygpath -p -w "$CP"`
+    OEDITOR_HOME=`cygpath -p -w "$OEDITOR_HOME"`
+fi
+
+# Make sure of java opts.
+#if [ -z "$JAVA_OPTS" ]
+#then
+JAVA_OPTS=" -Xmx256m"
+#fi
+
+# Main oeditor class.
+if [ -z "$CLASS_MAIN" ]
+then
+  CLASS_MAIN='com.gteam.rest.server.Main'
+fi
+
+# A bit of a hack to ensure that if the user puts -h/--help on the
+# command line run CLASS_MAIN in the foreground so the output will go
+# to the terminal.
+for i in "$@"
+do
+    if [ "$i" == "-h" ] || [ "$i" == "--help" ]
+    then
+        FOREGROUND="true"
+        break
+    fi
+done
+
+# oeditor_dmesg.log contains startup output from the crawler main class.
+# As soon as content appears in this log, this shell script prints the 
+# successful (or failed) startup content and moves off waiting on oeditor
+# startup. This technique is done so we can show on the console startup 
+# messages emitted by java subsequent to the redirect of stdout and stderr.
+startMessage="${OEDITOR_HOME}/oeditor_dmesg.log"
+
+# Remove any file that may have been left over from previous starts.
+if [ -f $startMessage ]
+then
+    rm -f $startmessage
+fi
+# Run oeditor as daemon.  Redirect stdout and stderr to a file.
+# Print start message with date, java version, java opts, ulimit, and uname.
+if [ -z "$OEDITOR_OUT" ]
+then
+  OEDITOR_OUT=${OEDITOR_HOME}/oeditor_out.log
+fi
+stdouterrlog=${OEDITOR_OUT}
+echo "`date` Starting oeditor" >> $stdouterrlog
+uname -a >> $stdouterrlog 2>&1
+${JAVACMD} ${JAVA_OPTS} -version >> $stdouterrlog 2>&1
+echo "JAVA_OPTS=${JAVA_OPTS}" >> $stdouterrlog
+ulimit -a >> $stdouterrlog 2>&1
+
+# If FOREGROUND is set, run oeditor in foreground.
+if [ -n "$FOREGROUND" ]
+then
+    CLASSPATH=${CP} $JAVACMD -Doeditor.home=${OEDITOR_HOME} \
+        -Doeditor.out=${OEDITOR_OUT} ${JAVA_OPTS} ${JMX_OPTS} \
+        -Djava.library.path=${OEDITOR_HOME}/sigar \
+        $CLASS_MAIN $@
+else
+    CLASSPATH=${CP} nohup $JAVACMD -Doeditor.home=${OEDITOR_HOME} \
+        -Doeditor.out=${OEDITOR_OUT} ${JAVA_OPTS} ${JMX_OPTS} \
+        -Djava.library.path=${OEDITOR_HOME}/sigar \
+        $CLASS_MAIN $@ >> ${stdouterrlog} 2>&1 &
+    OEDITOR_PID=$!
+
+    # Wait for content in the oeditor_dmesg.log file.
+    echo -n "`date` Oeditor starting (pid $OEDITOR_PID)"
+    while true 
+    do
+        sleep 1
+        if [ -s $startMessage ]
+        then
+            echo
+            cat $startMessage
+            rm -f $startMessage
+            break
+        fi
+        kill -0 $OEDITOR_PID > /dev/null 2>&1
+        if [ $? -ne 0 ]
+        then
+            echo
+            echo "ERROR: JVM terminated without running Oeditor."
+            echo "This could be due to invalid JAVA_OPTS or JMX_PORT, etc."
+            echo "See oeditor_out.log for more details."
+            echo "Here are its last three lines: "
+            echo
+            tail -3 $stdouterrlog
+            break
+        fi
+#        echo -n '.'
+    done
+
+    kill -0 $OEDITOR_PID > /dev/null 2>&1
+    if [ $? -eq 0 ] 
+    then
+        echo $OEDITOR_PID > oeditor.pid
+    fi
+fi
