@@ -23,7 +23,7 @@ EditorInterface.prototype = {
     },
     executionSuccess: function (data) {
         if(data.errors) {
-            $("#consoleArea").text(data.error);
+            $("#consoleArea").text(data.errorString);
             $("#consoleArea").css("color", "red");
         } else {
             $("#consoleArea").text(data.result);
